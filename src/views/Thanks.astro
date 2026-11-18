@@ -1,0 +1,14 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Tickets from '../components/Tickets.astro';
+import { t, routes, type Lang } from '../i18n';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const d = t(lang);
+---
+<Base lang={lang} pageKey="thanks" title={d.thanks.title} noindex>
+  <PageHero lang={lang} h1a={d.thanks.h1a} h1b={d.thanks.h1b} actions={false} />
+  <section class="sec"><div class="wrap"><a class="btn btn-k btn-inline" href={routes.home[lang]}>{d.thanks.back}</a></div></section>
+  <Tickets lang={lang} />
+</Base>

@@ -1,0 +1,12 @@
+---
+import { business } from '../data/business';
+import { t, routes, type Lang } from '../i18n';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const d = t(lang);
+---
+<div class="bar" data-bar>
+  <a class="bar-p" href={`tel:${business.phoneE164}`} data-place="bar"><svg class="ico" aria-hidden="true"><use href="#i-phone"/></svg>{d.cta.call}</a>
+  <a href={business.telegramPublic} target="_blank" rel="noopener" data-place="bar"><svg class="ico" aria-hidden="true"><use href="#i-tg"/></svg>Telegram</a>
+  <a href={`${routes.contacts[lang]}#where`} data-local="where" data-track="route_open" data-place="bar"><svg class="ico" aria-hidden="true"><use href="#i-pin"/></svg>{d.cta.route}</a>
+</div>

@@ -1,0 +1,15 @@
+---
+import { icon, word } from '../data/logo';
+// Знак и надпись в одну строку. Цвет берётся из currentColor.
+const scale = 1.55;
+const gap = 56;
+const W = Math.round(icon.w + gap + word.w * scale);
+const H = icon.h;
+const wy = Math.round((H - word.h * scale) / 2);
+interface Props { iconOnly?: boolean }
+const { iconOnly = false } = Astro.props;
+---
+<svg class="logo-svg" viewBox={`0 0 ${iconOnly ? icon.w : W} ${H}`} role="img" aria-label="Autocheck">
+  <path fill="currentColor" fill-rule="evenodd" d={icon.d} />
+  {!iconOnly && <path fill="currentColor" fill-rule="evenodd" transform={`translate(${icon.w + gap} ${wy}) scale(${scale})`} d={word.d} />}
+</svg>

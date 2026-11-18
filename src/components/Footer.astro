@@ -1,0 +1,95 @@
+---
+import { business, mapLinks } from '../data/business';
+import { t, routes, type Lang } from '../i18n';
+import Logo from './Logo.astro';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const d = t(lang);
+const g = business.google.rating;
+const gShow = g.value > 0 && g.count > 0;
+const tgInsurance = `${business.telegramInsurance}?text=${encodeURIComponent(d.services.insurance.tgText)}`;
+---
+<footer class="foot">
+  <div class="wrap foot-grid">
+    <section class="foot-col" aria-labelledby="rev-h">
+      <h2 class="foot-t" id="rev-h">{d.reviews.title}</h2>
+      <div class="revs">
+        <div class="rev" data-g-card>
+          <div class="rev-main">
+            <div class="rev-hd"><svg class="ico" aria-hidden="true"><use href="#i-gpin"/></svg>{d.reviews.google}</div>
+            <div class="rev-sc" data-g-score hidden={!gShow}>
+              <b data-g-rating>{gShow ? g.value.toFixed(1).replace('.', ',') : ''}</b><span class="stars" data-g-stars aria-hidden="true" style={gShow ? `--r:${g.value}` : undefined}>★★★★★</span><span class="rev-cnt" data-g-count data-tpl={d.reviews.count}>{gShow ? d.reviews.count.replace('{n}', String(g.count)) : ''}</span>
+            </div>
+            <p class="rev-hint" data-g-hint hidden={gShow}>{d.reviews.googleHint}</p>
+          </div>
+          <div class="rev-acts">
+            <a class="rev-rd" href={mapLinks.googleReviews} target="_blank" rel="noopener" data-g-read data-track="review_click" data-provider="google" data-action="read">{d.reviews.read}</a>
+            <a class="rev-wr" href={mapLinks.googleWriteReview} target="_blank" rel="noopener" data-track="review_click" data-provider="google" data-action="write">{d.reviews.write}</a>
+          </div>
+          <div class="rev-quotes" data-g-quotes hidden></div>
+        </div>
+        <div class="rev">
+          <div class="rev-main">
+            <div class="rev-hd"><span class="ya-dot" aria-hidden="true"><svg class="ico"><use href="#i-pin"/></svg></span>{d.reviews.yandex}</div>
+            <iframe class="ya-badge" data-src={mapLinks.yandexBadge} title={d.reviews.badgeTitle} width="150" height="50"></iframe>
+          </div>
+          <div class="rev-acts">
+            <a class="rev-rd" href={mapLinks.yandexReviews} target="_blank" rel="noopener" data-track="review_click" data-provider="yandex" data-action="read">{d.reviews.read}</a>
+            <a class="rev-wr" href={mapLinks.yandexWriteReview} target="_blank" rel="noopener" data-track="review_click" data-provider="yandex" data-action="write">{d.reviews.write}</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="foot-col" aria-labelledby="fb-h">
+      <h2 class="foot-t" id="fb-h">{d.feedback.title}</h2>
+      <div class="fb" data-fb>
+        <div class="fb-row">
+          <div><b>{d.feedback.q}</b><small>{d.feedback.sub}</small></div>
+          <button type="button" data-fb-toggle aria-expanded="false" aria-controls="fb-form" data-open={d.feedback.open} data-hide={d.feedback.hide}>{d.feedback.open}</button>
+        </div>
+        <form class="fb-body" id="fb-form" method="post" action="/api/feedback" novalidate hidden
+              data-err-text={d.feedback.errText} data-err-send={d.feedback.errSend} data-ok={d.feedback.ok}>
+          <input type="hidden" name="lang" value={lang} />
+          <input type="hidden" name="page" value={Astro.url.pathname} />
+          <input type="hidden" name="ts_start" value="" />
+          <div class="hp" aria-hidden="true"><label>Company <input type="text" name="company" tabindex="-1" autocomplete="off" /></label></div>
+          <fieldset class="chips chips-dark">
+            <legend class="vh">{d.feedback.title}</legend>
+            <label class="chip"><input type="radio" name="type" value="complaint" /><span>{d.feedback.complaint}</span></label>
+            <label class="chip"><input type="radio" name="type" value="suggestion" /><span>{d.feedback.suggestion}</span></label>
+          </fieldset>
+          <textarea id="fb-text" name="text" maxlength="1000" placeholder={d.feedback.textPh} aria-label={d.feedback.textLabel} required></textarea>
+          <input id="fb-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" maxlength="20" placeholder={d.feedback.phonePh} aria-label={d.feedback.phonePh} />
+          <button class="fb-send" type="submit">{d.feedback.send}</button>
+          <p class="form-msg" role="alert" data-fb-msg hidden></p>
+        </form>
+      </div>
+    </section>
+
+    <section class="foot-col foot-ct" aria-labelledby="ct-h">
+      <h2 class="foot-t" id="ct-h">{d.footer.contacts}</h2>
+      <a class="foot-phone" href={`tel:${business.phoneE164}`} data-place="footer">{business.phoneDisplay}</a>
+      <span>{d.address.full}</span>
+      <span>{d.status.hours}</span>
+      <div class="socials">
+        <a href={business.telegramPublic} target="_blank" rel="noopener" aria-label="Telegram" data-place="footer"><svg class="ico" aria-hidden="true"><use href="#i-tg"/></svg></a>
+        <a href={business.instagram} target="_blank" rel="noopener" aria-label="Instagram"><svg class="ico" aria-hidden="true"><use href="#i-ig"/></svg></a>
+        <a href={business.facebook} target="_blank" rel="noopener" aria-label="Facebook"><svg class="ico" aria-hidden="true"><use href="#i-fb"/></svg></a>
+      </div>
+      <nav class="foot-nav" aria-label={d.a11y.menu}>
+        <a href={routes.inspection[lang]}>{d.nav.inspection}</a>
+        <a href={routes.gas[lang]}>{d.nav.gas}</a>
+        <a href={tgInsurance} target="_blank" rel="noopener" data-track="insurance_click" data-place="footer">{d.nav.insurance}</a>
+        <a href={routes.contacts[lang]}>{d.nav.contacts}</a>
+      </nav>
+    </section>
+
+    <div class="legal">
+      <span class="legal-logo"><Logo /></span>
+      <span>© {business.legalName}</span>
+      <span>{d.footer.accr}</span>
+      <a href={routes.privacy[lang]}>{d.footer.privacy}</a>
+    </div>
+  </div>
+</footer>

@@ -1,0 +1,169 @@
+---
+import '@fontsource-variable/onest/wght.css';
+import '@fontsource/ibm-plex-mono/500.css';
+import '@fontsource/ibm-plex-mono/600.css';
+import '../styles/global.css';
+import onestCyr from '@fontsource-variable/onest/files/onest-cyrillic-wght-normal.woff2?url';
+import onestLat from '@fontsource-variable/onest/files/onest-latin-wght-normal.woff2?url';
+import { business as b, mapLinks } from '../data/business';
+import { t, routes, type Lang, type PageKey } from '../i18n';
+import Icons from '../components/Icons.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import StickyBar from '../components/StickyBar.astro';
+import CallbackDialog from '../components/CallbackDialog.astro';
+
+interface Props {
+  lang: Lang;
+  pageKey?: PageKey;
+  title: string;
+  description?: string;
+  noindex?: boolean;
+  service?: 'inspection' | 'gas_test' | 'insurance';
+  ogImage?: string;
+  jsonld?: Record<string, unknown>[];
+}
+const { lang, pageKey, title, description, noindex = false, service = 'inspection', ogImage, jsonld = [] } = Astro.props;
+const d = t(lang);
+const site = b.domain;
+const path = pageKey ? routes[pageKey][lang] : Astro.url.pathname;
+const canonical = site + path;
+const og = site + (ogImage ?? `/og/${lang}-home.png`);
+
+const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+const s = b.services;
+const offer = (name: string, url: string, price: number, from: boolean) => ({
+  '@type': 'Offer',
+  itemOffered: { '@type': 'Service', name, url, areaServed: { '@type': 'City', name: d.address.city } },
+  priceCurrency: 'UZS',
+  ...(from ? { priceSpecification: { '@type': 'PriceSpecification', minPrice: price, priceCurrency: 'UZS' } } : { price }),
+});
+const businessLd = {
+  '@context': 'https://schema.org',
+  '@type': 'AutomotiveBusiness',
+  '@id': `${site}/#business`,
+  name: b.brand,
+  legalName: b.legalName,
+  description: d.home.description,
+  url: site + routes.home[lang],
+  telephone: b.phoneE164,
+  image: `${site}/og/${lang}-home.png`,
+  logo: `${site}/logo.png`,
+  priceRange: 'UZS',
+  address: { '@type': 'PostalAddress', streetAddress: d.address.street, addressLocality: d.address.city, addressRegion: d.address.district, addressCountry: 'UZ' },
+  geo: { '@type': 'GeoCoordinates', latitude: b.geo.lat, longitude: b.geo.lng },
+  hasMap: mapLinks.yandexReviews.replace('/reviews/', '/'),
+  openingHoursSpecification: Object.entries(b.hoursFallback).flatMap(([day, ranges]) =>
+    ranges.map(([opens, closes]) => ({ '@type': 'OpeningHoursSpecification', dayOfWeek: dayNames[Number(day)], opens, closes })),
+  ),
+  sameAs: [b.instagram, b.facebook, b.telegramPublic, b.google.listingUrl, `https://yandex.ru/profile/${b.yandex.orgId}`],
+  makesOffer: [
+    offer(d.services.inspection.name, site + routes.inspection[lang], s.inspection.priceUZS, s.inspection.from),
+    offer(d.services.gas.name, site + routes.gas[lang], s.gas.priceUZS, s.gas.from),
+    offer(d.services.insurance.name, site + routes.home[lang], s.insurance.priceUZS, s.insurance.from),
+  ],
+};
+const ld = [businessLd, ...jsonld];
+
+const config = {
+  lang,
+  page: path,
+  service,
+  offset: b.utcOffsetHours,
+  hours: b.hoursFallback,
+  status: d.status,
+  popup: b.callbackPopup,
+  ads: { id: b.analytics.googleAds, labels: b.analytics.adsLabels },
+  ym: b.analytics.ym,
+  leadTitle: { open: d.lead.title, closed: d.lead.titleClosed },
+  phone: { e164: b.phoneE164, display: b.phoneDisplay, copied: d.cta.copied },
+  googleWriteBase: 'https://search.google.com/local/writereview?placeid=',
+};
+const isProd = import.meta.env.PROD;
+const gtagIds = [b.analytics.ga4, b.analytics.googleAds].filter(Boolean);
+---
+<!doctype html>
+<html lang={d.htmlLang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{title}</title>
+    {description && <meta name="description" content={description} />}
+    {noindex && <meta name="robots" content="noindex, follow" />}
+    <link rel="canonical" href={canonical} />
+    {pageKey && !noindex && (
+      <>
+        <link rel="alternate" hreflang="ru-UZ" href={site + routes[pageKey].ru} />
+        <link rel="alternate" hreflang="uz-UZ" href={site + routes[pageKey].uz} />
+        <link rel="alternate" hreflang="x-default" href={site + routes[pageKey].ru} />
+      </>
+    )}
+    {b.verification.google && <meta name="google-site-verification" content={b.verification.google} />}
+    {b.verification.yandex && <meta name="yandex-verification" content={b.verification.yandex} />}
+    <meta name="theme-color" content="#FFD400" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="preload" as="font" type="font/woff2" crossorigin href={lang === 'ru' ? onestCyr : onestLat} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={b.brand} />
+    <meta property="og:locale" content={d.ogLocale} />
+    <meta property="og:locale:alternate" content={lang === 'ru' ? 'uz_UZ' : 'ru_RU'} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:title" content={title} />
+    {description && <meta property="og:description" content={description} />}
+    <meta property="og:image" content={og} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    {ld.map((item) => <script type="application/ld+json" set:html={JSON.stringify(item)} />)}
+
+    <script is:inline define:vars={{ gtagIds, isProd }}>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      window.gtag = gtag;
+      gtag('js', new Date());
+      gtagIds.forEach(function (id) { gtag('config', id); });
+      if (isProd && gtagIds.length) {
+        var s = document.createElement('script');
+        s.async = true;
+        s.src = 'https://www.googletagmanager.com/gtag/js?id=' + gtagIds[0];
+        document.head.appendChild(s);
+      }
+    </script>
+  </head>
+  <body data-lang={lang} data-service={service}>
+    <a class="skip" href="#main">{d.a11y.skip}</a>
+    <Icons />
+    <Header lang={lang} pageKey={pageKey} />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer lang={lang} />
+    <StickyBar lang={lang} />
+    <CallbackDialog lang={lang} />
+    <script type="application/json" id="app-config" set:html={JSON.stringify(config)} />
+    <script>
+      import '../scripts/app.ts';
+    </script>
+    {isProd && (
+      <script is:inline define:vars={{ ymId: b.analytics.ym, webvisor: b.analytics.ymWebvisor }}>
+        (function () {
+          function load() {
+            if (window.ym) return;
+            (function (m, e, t, r, i, k, a) {
+              m[i] = m[i] || function () { (m[i].a = m[i].a || []).push(arguments); };
+              m[i].l = 1 * new Date();
+              k = e.createElement(t); a = e.getElementsByTagName(t)[0]; k.async = 1; k.src = r; a.parentNode.insertBefore(k, a);
+            })(window, document, 'script', 'https://mc.yandex.ru/metrika/tag.js', 'ym');
+            window.ym(ymId, 'init', { clickmap: true, trackLinks: true, accurateTrackBounce: true, webvisor: webvisor });
+          }
+          if ('requestIdleCallback' in window) requestIdleCallback(load, { timeout: 3000 }); else setTimeout(load, 1500);
+        })();
+      </script>
+    )}
+    {isProd && <noscript><div><img src={`https://mc.yandex.ru/watch/${b.analytics.ym}`} style="position:absolute;left:-9999px" alt="" /></div></noscript>}
+  </body>
+</html>

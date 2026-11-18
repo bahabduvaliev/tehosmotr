@@ -1,0 +1,37 @@
+---
+import { business } from '../data/business';
+import { t, routes, type Lang } from '../i18n';
+import OpenStatus from './OpenStatus.astro';
+import PhonePlate from './PhonePlate.astro';
+interface Props { lang: Lang; h1a: string; h1b: string; sub?: string; crumb?: string; big?: boolean; service?: string; actions?: boolean }
+const { lang, h1a, h1b, sub, crumb, big = false, service, actions = true } = Astro.props;
+const d = t(lang);
+---
+<section class={`hero ${big ? 'hero-big' : ''}`}>
+  <div class="wrap hero-grid">
+    <div class="hero-l">
+      {crumb && (
+        <nav class="crumbs" aria-label={d.a11y.crumbs}>
+          <a href={routes.home[lang]}>{d.nav.home}</a><span aria-hidden="true">/</span><span aria-current="page">{crumb}</span>
+        </nav>
+      )}
+      <OpenStatus lang={lang} place="hero" />
+      <h1 class="h1"><span class="h1-a">{h1a}</span> <span class="h1-b">{h1b}</span></h1>
+      {sub && <p class="hero-sub">{sub}</p>}
+      {actions && (
+        <div class="hero-cta" data-hero-cta>
+          <a class="btn btn-k" href={`${routes.contacts[lang]}#callback-form`} data-callback data-service={service} data-place="hero">{d.cta.callback}</a>
+          <a class="btn btn-o hero-tg" href={business.telegramPublic} target="_blank" rel="noopener" data-place="hero"><svg class="ico" aria-hidden="true"><use href="#i-tg"/></svg>Telegram</a>
+        </div>
+      )}
+    </div>
+    {actions && (
+      <div class="hero-r">
+        <span class="hero-cap">{d.cta.callUs}</span>
+        <PhonePlate lang={lang} size="lg" place="hero" />
+        <span class="tapnote">{d.cta.tap}</span>
+        <span class="hero-addr"><svg class="ico" aria-hidden="true"><use href="#i-pin"/></svg>{d.address.full}</span>
+      </div>
+    )}
+  </div>
+</section>

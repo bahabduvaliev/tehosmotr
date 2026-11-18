@@ -1,0 +1,42 @@
+---
+import { business } from '../data/business';
+import { t, type Lang } from '../i18n';
+interface Props { lang: Lang; id: string; service?: 'inspection' | 'gas_test' | 'insurance'; inDialog?: boolean }
+const { lang, id, service = 'inspection', inDialog = false } = Astro.props;
+const d = t(lang);
+const chips = Object.entries(d.lead.chips) as [string, string][];
+---
+<form class="lead" method="post" action="/api/lead" novalidate data-lead data-place={inDialog ? 'dialog' : 'inline'}
+      data-err-phone={d.lead.errPhone} data-err-send={d.lead.errSend}>
+  <input type="hidden" name="lang" value={lang} />
+  <input type="hidden" name="page" value={Astro.url.pathname} />
+  <input type="hidden" name="ts_start" value="" />
+  <div class="hp" aria-hidden="true"><label>Company <input type="text" name="company" tabindex="-1" autocomplete="off" /></label></div>
+
+  <div class="lead-fields" data-lead-fields>
+    <label class="phone-field" for={`${id}-phone`}>
+      <span class="vh">{d.lead.phoneLabel}</span>
+      <span class="phone-prefix" aria-hidden="true">+998</span>
+      <input id={`${id}-phone`} name="phone" type="tel" inputmode="numeric" autocomplete="tel-national"
+             placeholder="__ ___ __ __" maxlength="24" required aria-describedby={`${id}-msg`} />
+    </label>
+    <fieldset class="chips">
+      <legend class="vh">{d.lead.serviceLabel}</legend>
+      {chips.map(([value, label]) => (
+        <label class="chip">
+          <input type="radio" name="service" value={value} checked={value === service} />
+          <span>{label}</span>
+        </label>
+      ))}
+    </fieldset>
+    <button class="btn btn-k" type="submit" data-label={d.lead.submit} data-sending={d.lead.sending}>{d.lead.submit}</button>
+    <p class="form-msg" id={`${id}-msg`} role="alert" data-lead-msg hidden></p>
+    <p class="form-or">{d.lead.or}: <a href={`tel:${business.phoneE164}`} data-place="form">{business.phoneDisplay}</a></p>
+  </div>
+
+  <div class="lead-ok" data-lead-ok hidden tabindex="-1">
+    <span class="ok-mark" aria-hidden="true"><svg class="ico"><use href="#i-check"/></svg></span>
+    <b>{d.lead.ok}</b>
+    {inDialog && <button class="btn btn-o" type="button" data-close>{d.a11y.close}</button>}
+  </div>
+</form>

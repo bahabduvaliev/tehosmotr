@@ -1,0 +1,18 @@
+---
+import { t, type Lang } from '../i18n';
+interface Props { lang: Lang; items: { q: string; a: string }[] }
+const { lang, items } = Astro.props;
+---
+<section class="sec" aria-labelledby="faq-h">
+  <div class="wrap narrow">
+    <h2 class="h2" id="faq-h">{t(lang).faqTitle}</h2>
+    <div class="faq">
+      {items.map((it) => (
+        <details>
+          <summary>{it.q}</summary>
+          <p>{it.a}</p>
+        </details>
+      ))}
+    </div>
+  </div>
+</section>

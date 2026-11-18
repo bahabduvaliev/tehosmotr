@@ -1,0 +1,33 @@
+---
+import { mapLinks } from '../data/business';
+import { t, type Lang } from '../i18n';
+import OpenStatus from './OpenStatus.astro';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const d = t(lang);
+---
+<section class="sec" id="where" aria-labelledby="where-h">
+  <div class="wrap where">
+    <div class="map">
+      <iframe data-src={mapLinks.yandexEmbed(lang)} title={d.where.mapTitle} allowfullscreen referrerpolicy="no-referrer-when-downgrade"></iframe>
+      <noscript><iframe src={mapLinks.yandexEmbed(lang)} title={d.where.mapTitle}></iframe></noscript>
+    </div>
+    <div class="where-info">
+      <h2 class="h2" id="where-h">{d.where.title}</h2>
+      <p class="addr"><b>{d.address.full}</b><span>{d.address.district}. {d.address.landmark}</span></p>
+      <p class="hours"><span class="hours-label">{d.where.hoursLabel}:</span> {d.status.hours} <small>({d.status.noLunch})</small> <OpenStatus lang={lang} place="where" /></p>
+      <div class="routes">
+        <a class="rbtn" href={mapLinks.yandexRoute} target="_blank" rel="noopener" data-track="route_click" data-provider="yandex">
+          <span class="rbtn-tile rbtn-ya"><svg class="ico" aria-hidden="true"><use href="#i-pin"/></svg></span>
+          <span class="rbtn-txt"><b>{d.where.yandex}</b><small>{d.where.build}</small></span>
+          <svg class="ico" aria-hidden="true"><use href="#i-ext"/></svg>
+        </a>
+        <a class="rbtn" href={mapLinks.googleRoute} target="_blank" rel="noopener" data-track="route_click" data-provider="google">
+          <span class="rbtn-tile rbtn-gg"><svg class="ico" aria-hidden="true"><use href="#i-gpin"/></svg></span>
+          <span class="rbtn-txt"><b>{d.where.google}</b><small>{d.where.build}</small></span>
+          <svg class="ico" aria-hidden="true"><use href="#i-ext"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,13 @@
+---
+import { business } from '../data/business';
+import { t, type Lang } from '../i18n';
+interface Props { lang: Lang; place: string }
+const { lang, place } = Astro.props;
+const d = t(lang);
+---
+<a class="status" href={business.google.listingUrl} target="_blank" rel="noopener" title={d.status.title}
+   data-status data-track="status_click" data-place={place}>
+  <i class="status-dot" aria-hidden="true"></i>
+  <span data-status-text>{d.status.hours}</span>
+  <svg class="ico" aria-hidden="true"><use href="#i-gpin"/></svg>
+</a>

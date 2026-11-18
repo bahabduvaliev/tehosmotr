@@ -1,0 +1,68 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Tickets from '../components/Tickets.astro';
+import Where from '../components/Where.astro';
+import Faq from '../components/Faq.astro';
+import LeadSection from '../components/LeadSection.astro';
+import { business } from '../data/business';
+import { t, routes, lawName, type Lang } from '../i18n';
+import { faqLd, serviceLd, crumbLd } from '../data/ld';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const d = t(lang);
+const p = d.inspection;
+const ld = [
+  serviceLd(lang, 'inspection', d.services.inspection.name, p.description),
+  crumbLd(lang, 'inspection', p.crumb),
+  faqLd(p.faq),
+];
+---
+<Base lang={lang} pageKey="inspection" title={p.title} description={p.description} service="inspection" ogImage={`/og/${lang}-inspection.png`} jsonld={ld}>
+  <PageHero lang={lang} h1a={p.h1a} h1b={p.h1b} sub={p.sub} crumb={p.crumb} service="inspection" />
+
+  <section class="sec" aria-label={d.services.inspection.name}>
+    <div class="wrap">
+      <dl class="facts">
+        {p.facts.map((f) => <div class="fact"><dt>{f.k}</dt><dd><b>{f.v}</b> <span>{f.u}</span></dd></div>)}
+      </dl>
+    </div>
+  </section>
+
+  <section class="sec" aria-labelledby="docs-h">
+    <div class="wrap narrow">
+      <h2 class="h2" id="docs-h">{p.docsTitle}</h2>
+      <ul class="docs">
+        {p.docs.map((x) => (
+          <li><span class="docs-box" aria-hidden="true"><svg class="ico"><use href="#i-check"/></svg></span><div><b>{x.t}</b><span>{x.d}</span></div></li>
+        ))}
+      </ul>
+      <p class="bundle">{p.docsNote} <a href={routes.gas[lang]}>{p.docsLink}<svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></a></p>
+    </div>
+  </section>
+
+  <section class="sec" aria-labelledby="steps-h">
+    <div class="wrap narrow">
+      <h2 class="h2" id="steps-h">{p.stepsTitle}</h2>
+      <ol class="steps">
+        {p.steps.map((x) => <li><div><b>{x.t}</b><span>{x.d}</span></div></li>)}
+      </ol>
+    </div>
+  </section>
+
+  <section class="sec" aria-labelledby="freq-h">
+    <div class="wrap narrow">
+      <h2 class="h2" id="freq-h">{p.freqTitle}</h2>
+      <p class="sec-lead">{p.freqLead}</p>
+      <dl class="freq">
+        {p.freq.map((x) => <div><dt>{x.k}</dt><dd>{x.v}</dd></div>)}
+      </dl>
+      <p class="source">{p.freqSource} <a href={business.law.url} target="_blank" rel="noopener nofollow">{lawName[lang]}<svg class="ico" aria-hidden="true"><use href="#i-ext"/></svg></a></p>
+    </div>
+  </section>
+
+  <LeadSection lang={lang} title={p.formTitle} service="inspection" />
+  <Where lang={lang} />
+  <Faq lang={lang} items={p.faq} />
+  <Tickets lang={lang} current="inspection" />
+</Base>

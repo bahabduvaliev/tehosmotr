@@ -1,0 +1,30 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import { mapLinks } from '../data/business';
+import { t, type Lang } from '../i18n';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const d = t(lang);
+const p = d.review;
+---
+<Base lang={lang} pageKey="review" title={p.title} description={p.description} noindex>
+  <PageHero lang={lang} h1a={p.h1a} h1b={p.h1b} sub={p.sub} actions={false} />
+  <section class="sec">
+    <div class="wrap narrow">
+      <div class="routes">
+        <a class="rbtn" href={mapLinks.googleWriteReview} target="_blank" rel="noopener" data-track="review_click" data-provider="google" data-action="write">
+          <span class="rbtn-tile rbtn-gg"><svg class="ico" aria-hidden="true"><use href="#i-gpin"/></svg></span>
+          <span class="rbtn-txt"><b>{p.google}</b><small>{d.reviews.write}</small></span>
+          <svg class="ico" aria-hidden="true"><use href="#i-ext"/></svg>
+        </a>
+        <a class="rbtn" href={mapLinks.yandexWriteReview} target="_blank" rel="noopener" data-track="review_click" data-provider="yandex" data-action="write">
+          <span class="rbtn-tile rbtn-ya"><svg class="ico" aria-hidden="true"><use href="#i-pin"/></svg></span>
+          <span class="rbtn-txt"><b>{p.yandex}</b><small>{d.reviews.write}</small></span>
+          <svg class="ico" aria-hidden="true"><use href="#i-ext"/></svg>
+        </a>
+      </div>
+      <p class="sec-lead review-direct">{p.direct}</p>
+    </div>
+  </section>
+</Base>

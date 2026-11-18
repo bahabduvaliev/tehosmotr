@@ -1,0 +1,41 @@
+---
+import { business } from '../data/business';
+import { t, routes, type Lang } from '../i18n';
+interface Props { lang: Lang; current?: 'inspection' | 'gas'; heading?: boolean }
+const { lang, current, heading = true } = Astro.props;
+const d = t(lang);
+const s = d.services;
+const tgInsurance = `${business.telegramInsurance}?text=${encodeURIComponent(s.insurance.tgText)}`;
+// Текущая услуга стоит первой и выделена; на главной главный — техосмотр.
+const main = current ?? 'inspection';
+const order: ('inspection' | 'gas')[] = main === 'gas' ? ['gas', 'inspection'] : ['inspection', 'gas'];
+---
+<section class="sec" id="services" aria-labelledby="services-h">
+  <div class="wrap">
+    {heading && <h2 class="h2" id="services-h">{s.title}</h2>}
+    <div class="tickets">
+      {order.map((k) => {
+        const it = s[k];
+        const isMain = k === main;
+        const Tag = current === k ? 'div' : 'a';
+        const href = current === k ? undefined : routes[k][lang];
+        return (
+          <Tag class={`ticket ${isMain ? 'ticket-main' : ''}`} href={href} data-ticket={k}>
+            <span class="ticket-name">{it.name}</span>
+            <span class="ticket-price">{it.price}</span>
+            <span class="ticket-meta">{it.meta}</span>
+            <span class="ticket-need"><svg class="ico" aria-hidden="true"><use href="#i-doc"/></svg>{it.need}</span>
+            {current !== k && <span class="ticket-more">{it.more}<svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></span>}
+          </Tag>
+        );
+      })}
+      <a class="ticket ticket-minor" href={tgInsurance} target="_blank" rel="noopener" data-ticket="insurance" data-track="insurance_click" data-place="ticket">
+        <span class="ticket-name">{s.insurance.name}</span>
+        <span class="ticket-price">{s.insurance.price}</span>
+        <span class="ticket-meta">{s.insurance.meta}</span>
+        <span class="ticket-more"><svg class="ico" aria-hidden="true"><use href="#i-tg"/></svg>{s.insurance.more}<svg class="ico" aria-hidden="true"><use href="#i-ext"/></svg></span>
+      </a>
+    </div>
+    <p class="bundle">{s.bundle}</p>
+  </div>
+</section>

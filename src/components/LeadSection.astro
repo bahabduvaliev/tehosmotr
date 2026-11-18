@@ -1,0 +1,14 @@
+---
+import { t, type Lang } from '../i18n';
+import LeadForm from './LeadForm.astro';
+interface Props { lang: Lang; title?: string; service?: 'inspection' | 'gas_test' | 'insurance' }
+const { lang, title, service = 'inspection' } = Astro.props;
+const d = t(lang);
+---
+<section class="sec sec-form" id="callback-form" aria-labelledby="lead-h">
+  <div class="wrap narrow">
+    <h2 class="h2" id="lead-h">{title ?? d.lead.inlineTitle}</h2>
+    <p class="lead-sub">{d.lead.inlineSub}</p>
+    <LeadForm lang={lang} id="inl" service={service} />
+  </div>
+</section>

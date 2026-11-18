@@ -1,0 +1,28 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Tickets from '../components/Tickets.astro';
+import Where from '../components/Where.astro';
+import Faq from '../components/Faq.astro';
+import { t, type Lang } from '../i18n';
+import { faqLd } from '../data/ld';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const d = t(lang);
+---
+<Base lang={lang} pageKey="home" title={d.home.title} description={d.home.description} ogImage={`/og/${lang}-home.png`} jsonld={[faqLd(d.home.faq)]}>
+  <PageHero lang={lang} big h1a={d.home.h1a} h1b={d.home.h1b} sub={d.home.sub} service="inspection" />
+  <Tickets lang={lang} />
+  <section class="sec" aria-labelledby="why-h">
+    <div class="wrap">
+      <h2 class="h2" id="why-h">{d.home.whyTitle}</h2>
+      <ul class="docs why">
+        {d.home.why.map((x) => (
+          <li><span class="docs-box" aria-hidden="true"><svg class="ico"><use href="#i-check"/></svg></span><div><b>{x.t}</b><span>{x.d}</span></div></li>
+        ))}
+      </ul>
+    </div>
+  </section>
+  <Where lang={lang} />
+  <Faq lang={lang} items={d.home.faq} />
+</Base>

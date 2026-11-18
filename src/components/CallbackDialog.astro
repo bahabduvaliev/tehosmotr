@@ -1,0 +1,17 @@
+---
+import { t, type Lang } from '../i18n';
+import LeadForm from './LeadForm.astro';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const d = t(lang);
+---
+<dialog class="dlg" id="callback" aria-labelledby="callback-t">
+  <div class="dlg-box">
+    <span class="dlg-handle" aria-hidden="true"></span>
+    <div class="dlg-top">
+      <h2 id="callback-t">{d.lead.title}</h2>
+      <button class="dlg-x" type="button" data-close aria-label={d.a11y.close}><svg class="ico" aria-hidden="true"><use href="#i-x"/></svg></button>
+    </div>
+    <LeadForm lang={lang} id="dlg" inDialog />
+  </div>
+</dialog>

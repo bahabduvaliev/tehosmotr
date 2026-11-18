@@ -1,0 +1,19 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Tickets from '../components/Tickets.astro';
+import Where from '../components/Where.astro';
+import LeadSection from '../components/LeadSection.astro';
+import { t, type Lang } from '../i18n';
+import { crumbLd } from '../data/ld';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const d = t(lang);
+const p = d.contacts;
+---
+<Base lang={lang} pageKey="contacts" title={p.title} description={p.description} jsonld={[crumbLd(lang, 'contacts', p.crumb)]}>
+  <PageHero lang={lang} h1a={p.h1a} h1b={p.h1b} sub={p.sub} crumb={p.crumb} />
+  <Where lang={lang} />
+  <LeadSection lang={lang} />
+  <Tickets lang={lang} />
+</Base>

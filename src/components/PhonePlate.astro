@@ -1,0 +1,13 @@
+---
+import { business } from '../data/business';
+import { t, type Lang } from '../i18n';
+interface Props { lang: Lang; size?: 'sm' | 'md' | 'lg'; place: string }
+const { lang, size = 'md', place } = Astro.props;
+const d = t(lang);
+---
+<a class={`plate plate-${size}`} href={`tel:${business.phoneE164}`} title={business.phoneDisplay} data-place={place}>
+  <span class="vh">{d.cta.call} +998</span>
+  <span class="plate-reg">{business.phonePlate.region}</span>
+  <span class="plate-num">{business.phonePlate.number}</span>
+  <span class="plate-uz" aria-hidden="true"><i class="plate-flag"></i><small>UZ</small></span>
+</a>

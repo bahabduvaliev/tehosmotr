@@ -1,0 +1,32 @@
+---
+import { business } from '../data/business';
+import { t, routes, type Lang, type PageKey } from '../i18n';
+import Logo from './Logo.astro';
+import OpenStatus from './OpenStatus.astro';
+import PhonePlate from './PhonePlate.astro';
+interface Props { lang: Lang; pageKey?: PageKey }
+const { lang, pageKey } = Astro.props;
+const d = t(lang);
+const other: Lang = lang === 'ru' ? 'uz' : 'ru';
+const otherHref = pageKey ? routes[pageKey][other] : routes.home[other];
+const selfHref = pageKey ? routes[pageKey][lang] : routes.home[lang];
+const tgInsurance = `${business.telegramInsurance}?text=${encodeURIComponent(d.services.insurance.tgText)}`;
+const cur = (k: PageKey) => (pageKey === k ? 'page' : undefined);
+---
+<header class="hdr">
+  <div class="wrap">
+    <a class="logo" href={routes.home[lang]} aria-label={`Autocheck Lab — ${d.nav.home}`}><Logo /></a>
+    <nav class="nav" aria-label={d.a11y.menu}>
+      <a href={routes.inspection[lang]} aria-current={cur('inspection')}>{d.nav.inspection}</a>
+      <a href={routes.gas[lang]} aria-current={cur('gas')}>{d.nav.gas}</a>
+      <a href={tgInsurance} target="_blank" rel="noopener" data-track="insurance_click" data-place="nav">{d.nav.insurance}<svg class="ico" aria-hidden="true"><use href="#i-ext"/></svg></a>
+      <a href={routes.contacts[lang]} aria-current={cur('contacts')}>{d.nav.contacts}</a>
+    </nav>
+    <OpenStatus lang={lang} place="header" />
+    <div class="lang" role="group" aria-label={d.a11y.lang}>
+      <a href={lang === 'ru' ? selfHref : otherHref} hreflang="ru" lang="ru" aria-current={lang === 'ru' ? 'true' : undefined} data-track="lang_switch">RU</a>
+      <a href={lang === 'uz' ? selfHref : otherHref} hreflang="uz" lang="uz" aria-current={lang === 'uz' ? 'true' : undefined} data-track="lang_switch">UZ</a>
+    </div>
+    <PhonePlate lang={lang} size="sm" place="header" />
+  </div>
+</header>

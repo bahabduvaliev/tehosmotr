@@ -1,0 +1,21 @@
+---
+import Base from '../layouts/Base.astro';
+import { t, type Lang } from '../i18n';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const p = t(lang).privacy;
+---
+<Base lang={lang} pageKey="privacy" title={p.title} description={p.description}>
+  <section class="sec sec-first">
+    <div class="wrap narrow prose">
+      <h1 class="h2 h2-page">{p.h1}</h1>
+      <p class="source">{p.updated}</p>
+      {p.blocks.map((blk) => (
+        <>
+          <h2>{blk.h}</h2>
+          {blk.p.length > 1 ? <ul>{blk.p.map((x) => <li>{x}</li>)}</ul> : <p>{blk.p[0]}</p>}
+        </>
+      ))}
+    </div>
+  </section>
+</Base>

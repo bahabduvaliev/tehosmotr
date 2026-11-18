@@ -1,0 +1,8 @@
+name = "texnikorik"
+compatibility_date = "2026-10-01"
+pages_build_output_dir = "dist"
+
+# Создайте KV-пространство (wrangler kv namespace create PLACE_CACHE) и вставьте его id:
+# [[kv_namespaces]]
+# binding = "PLACE_CACHE"
+# id = "…"

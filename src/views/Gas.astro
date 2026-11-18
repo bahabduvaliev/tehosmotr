@@ -1,0 +1,50 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Tickets from '../components/Tickets.astro';
+import Where from '../components/Where.astro';
+import Faq from '../components/Faq.astro';
+import LeadSection from '../components/LeadSection.astro';
+import { t, type Lang } from '../i18n';
+import { faqLd, serviceLd, crumbLd } from '../data/ld';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const d = t(lang);
+const p = d.gas;
+const ld = [serviceLd(lang, 'gas', d.services.gas.name, p.description), crumbLd(lang, 'gas', p.crumb), faqLd(p.faq)];
+---
+<Base lang={lang} pageKey="gas" title={p.title} description={p.description} service="gas_test" ogImage={`/og/${lang}-gas.png`} jsonld={ld}>
+  <PageHero lang={lang} h1a={p.h1a} h1b={p.h1b} sub={p.sub} crumb={p.crumb} service="gas_test" />
+
+  <section class="sec" aria-label={d.services.gas.name}>
+    <div class="wrap">
+      <dl class="facts">
+        {p.facts.map((f) => <div class="fact"><dt>{f.k}</dt><dd><b>{f.v}</b> <span>{f.u}</span></dd></div>)}
+      </dl>
+    </div>
+  </section>
+
+  <section class="sec" aria-labelledby="who-h">
+    <div class="wrap narrow">
+      <h2 class="h2" id="who-h">{p.whoTitle}</h2>
+      <ul class="docs">
+        {p.who.map((x) => (
+          <li><span class="docs-box" aria-hidden="true"><svg class="ico"><use href="#i-check"/></svg></span><div><b>{x.t}</b><span>{x.d}</span></div></li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="sec" aria-labelledby="price-h">
+    <div class="wrap narrow">
+      <h2 class="h2" id="price-h">{p.priceTitle}</h2>
+      <p class="sec-lead">{p.priceText}</p>
+      <p class="bundle">{d.services.bundle}</p>
+    </div>
+  </section>
+
+  <LeadSection lang={lang} title={p.formTitle} service="gas_test" />
+  <Where lang={lang} />
+  <Faq lang={lang} items={p.faq} />
+  <Tickets lang={lang} current="gas" />
+</Base>
