@@ -72,7 +72,8 @@ async function fetchPlace(key: string, placeId: string, lang: string): Promise<P
   return normalizePlace((await res.json()) as GPlace);
 }
 
-export async function handlePlace({ request, env, waitUntil }: Ctx): Promise<Response> {
+export async function handlePlace(ctx: Ctx): Promise<Response> {
+  const { request, env } = ctx;
   const headers = { 'Cache-Control': 'public, max-age=900' };
   const key = env.GOOGLE_PLACES_API_KEY;
   const placeId = env.GOOGLE_PLACE_ID;
@@ -90,7 +91,7 @@ export async function handlePlace({ request, env, waitUntil }: Ctx): Promise<Res
   };
 
   if (cached) {
-    if (Date.now() - cached.fetchedAt > TTL_MS) waitUntil(refresh()); // отдаём старое, обновляем в фоне
+    if (Date.now() - cached.fetchedAt > TTL_MS) ctx.waitUntil(refresh()); // отдаём старое, обновляем в фоне
     return json(cached, 200, headers);
   }
   const fresh = await refresh();

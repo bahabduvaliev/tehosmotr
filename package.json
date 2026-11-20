@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro check && astro build",
-    "preview": "wrangler pages dev dist --port 8788 --ip 0.0.0.0",
+    "preview": "wrangler dev --port 8788 --ip 0.0.0.0",
     "test": "playwright test",
     "og": "node scripts/make-og.mjs",
     "tg:chat-id": "node scripts/tg-chat-id.mjs"

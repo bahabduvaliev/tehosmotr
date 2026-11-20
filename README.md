@@ -65,7 +65,15 @@ Id чатов: добавьте бота в группу, напишите та�
 4. Settings → Functions → KV namespace bindings: привязать пространство с именем переменной `PLACE_CACHE`.
 5. Custom domains → добавить `texnikorik.uz` и `www.texnikorik.uz`, поменять DNS у регистратора.
 
-Технический адрес `*.pages.dev` закрыт от поисковиков в `public/_headers`.
+Технические адреса `*.pages.dev` и `*.workers.dev` закрыты от поисковиков.
+
+### Вариант Cloudflare Workers (если Cloudflare предлагает Workers вместо Pages)
+
+Workers & Pages → Create → Import a repository → `tehosmotr`.
+Build command: `npm run build`. Deploy command: `npx wrangler deploy` (по умолчанию). Остальное не трогать.
+Настройки берутся из `wrangler.toml`, серверная часть — `server/worker.ts`.
+Переменные (токен бота и т. д.): Worker → Settings → Variables and Secrets.
+Свой домен: Worker → Settings → Domains & Routes → Add → Custom domain → `texnikorik.uz`.
 
 ## Google Search Console и Яндекс Вебмастер
 

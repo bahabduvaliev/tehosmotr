@@ -1,8 +1,16 @@
-name = "texnikorik"
+# Cloudflare Workers: статические файлы из dist/ + серверные функции из server/worker.ts
+name = "tehosmotr"
+main = "server/worker.ts"
 compatibility_date = "2026-10-01"
-pages_build_output_dir = "dist"
 
-# Создайте KV-пространство (wrangler kv namespace create PLACE_CACHE) и вставьте его id:
+[assets]
+directory = "./dist"
+binding = "ASSETS"
+not_found_handling = "404-page"
+run_worker_first = true
+
+# Кэш рейтинга Google и защита форм от спама (по желанию).
+# Создайте пространство: npx wrangler kv namespace create PLACE_CACHE — и вставьте его id:
 # [[kv_namespaces]]
 # binding = "PLACE_CACHE"
 # id = "…"

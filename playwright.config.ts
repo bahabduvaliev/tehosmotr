@@ -8,7 +8,7 @@ export default defineConfig({
   reporter: [['list']],
   use: { baseURL: 'http://127.0.0.1:8788', trace: 'off' },
   webServer: {
-    command: 'npx wrangler pages dev dist --port 8788 --binding LEAD_DRY_RUN=1',
+    command: 'npx wrangler dev --port 8788 --ip 127.0.0.1 --var LEAD_DRY_RUN:1',
     url: 'http://127.0.0.1:8788/',
     reuseExistingServer: true,
     timeout: 60_000,
